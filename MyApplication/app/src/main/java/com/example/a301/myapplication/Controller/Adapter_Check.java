@@ -1,59 +1,47 @@
 package com.example.a301.myapplication.Controller;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.a301.myapplication.Model.Model_Lecture;
+import com.example.a301.myapplication.Model.Model_Check;
 import com.example.a301.myapplication.R;
-import com.example.a301.myapplication.SearchActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by 301 on 2017-09-29.
+ * Created by 301 on 2017-10-01.
  */
 
-public class Adapter_Lecture extends RecyclerView.Adapter<Adapter_Lecture.ViewHolder>{
+public class Adapter_Check extends  RecyclerView.Adapter<Adapter_Check.ViewHolder>{
 
-    List<Model_Lecture> tempArr;
+
+    List<Model_Check> tempArr;
     Context adapterContext;
-    Intent intent;
 
-    public Adapter_Lecture(Context context, List<Model_Lecture> tempArr) {
+
+    public Adapter_Check(Context context, ArrayList<Model_Check> tempArr) {
         this.adapterContext = context;
         this.tempArr = tempArr;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        intent = new Intent(adapterContext, SearchActivity.class);
-
+    public Adapter_Check.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lecture, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final Adapter_Lecture.ViewHolder holder, int position) {
+    public void onBindViewHolder(Adapter_Check.ViewHolder holder, int position) {
 
         holder.lectureTv.setText(tempArr.get(position).getLecture());
-        holder.lectureRoomTv.setText(tempArr.get(position).getLectureRoom());
-        holder.lectureTimeTv.setText(tempArr.get(position).getLectureStartTime()+"~"+tempArr.get(position).getLectureFinishTime());
-        holder.lectureDateTv.setText(tempArr.get(position).getLectureDay());
-        holder.test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //put
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("lecture",holder.lectureTv.getText().toString());
-                adapterContext.startActivity(intent);
-            }
-        });
+        holder.lectureRoomTv.setText(tempArr.get(position).getAttendanceDay());
+        holder.lectureTimeTv.setText(tempArr.get(position).getAttendanceTime());
+        holder.lectureDateTv.setText(tempArr.get(position).getAttendanceState());
 
     }
 
@@ -68,19 +56,17 @@ public class Adapter_Lecture extends RecyclerView.Adapter<Adapter_Lecture.ViewHo
         public TextView lectureRoomTv;
         public TextView lectureTimeTv;
         public TextView lectureDateTv;
-        public LinearLayout test;
+
 
 
         public ViewHolder(View itemView){
             super(itemView);
             Log.v("AdapterTest","viewHolder클래스");
 
-            test=(LinearLayout)itemView.findViewById(R.id.testItem);
             lectureTv= (TextView) itemView.findViewById(R.id.lecture_TextView);
             lectureRoomTv=(TextView)itemView.findViewById(R.id.lectureRoom_TextView);
             lectureDateTv=(TextView)itemView.findViewById(R.id.lectureDate_TextView);
             lectureTimeTv=(TextView)itemView.findViewById(R.id.lectureTime_TextView);
-
 
         }
 

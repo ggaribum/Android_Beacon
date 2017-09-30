@@ -1,5 +1,6 @@
 package com.example.a301.myapplication.Retrofit;
 
+import com.example.a301.myapplication.Data.CheckVO;
 import com.example.a301.myapplication.Data.LectureVO;
 import com.example.a301.myapplication.Data.StudentVO;
 
@@ -16,4 +17,6 @@ public interface RetrofitService {
 
     @GET("/student")
     Call<StudentVO> getStudentData();
+    @GET("/allCheck")
+    Call<CheckVO> getCheckData();
 }

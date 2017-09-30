@@ -20,7 +20,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".BeaconActivity"></activity>
+        <activity android:name=".BeaconActivity" />
+        <activity android:name=".ScheduleActivity" />
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>

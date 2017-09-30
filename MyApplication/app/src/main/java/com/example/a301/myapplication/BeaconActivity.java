@@ -1,6 +1,7 @@
 package com.example.a301.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ public class BeaconActivity extends AppCompatActivity {
     public ArrayList<Model_Lecture> tempList;
     public ArrayList<Model_Lecture> todayList;
     private boolean FLAG = false;
+    private boolean silentFLAG=false;
+    public String finishThisTime="2359";
     TextView tvID;
 
     @Override
@@ -43,6 +46,9 @@ public class BeaconActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
         Log.d("TestING", "!!!!!!!!!!!!!!!!!!!!!!비콘 액티비티 실행됨");
+
+        Intent intent = new Intent(this.getIntent());
+        final int soundSet1 = intent.getIntExtra("soundSet", 1);
 
         tvID = (TextView) findViewById(R.id.tvID);
 
@@ -55,6 +61,7 @@ public class BeaconActivity extends AppCompatActivity {
         beaconManager = new BeaconManager(this);
 
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
+
             Context context = getApplicationContext();
             AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
@@ -69,15 +76,35 @@ public class BeaconActivity extends AppCompatActivity {
 
                     //301 기준 수신강도가 95보다 크면 실내 무음모드 전환
                     if (nearestBeacon.getRssi() > -93) {
-                        //무음변환파트
-
 
                         Log.d("THISFLAG","IS:  "+FLAG);
 
+                        //현재시간을 구해서 nowIntTime 변수에 담기
+                        String tempStr[]=switchNowTime().split(" ");
+                        String nowDate=tempStr[0];
+                        String nowTime=tempStr[1];
+                        int nowIntTime = Integer.parseInt(nowTime);
+                        int finishTisTime=Integer.parseInt(finishThisTime);
 
+                        // 지금수업중이던 수업이 끝나고 나면 다시 수업 탐색, 원래 소리로 복귀
+                        if(finishTisTime<=nowIntTime)
+                        {
+                            FLAG=false;
+                            silentFLAG=false;
+                            if (soundSet1 == 0) {
+                                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                            } else if (soundSet1 == 1) {
+                                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                            } else if (soundSet1 == 2) {
+                                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                            }
+                        }
 
-
-
+                        //출결처리 된 상태 && 비콘구역이라면
+                        if(silentFLAG)
+                        {
+                            setSilent(mAudioManager);
+                        }
 
 
                         //수업 출석비교부분
@@ -111,9 +138,9 @@ public class BeaconActivity extends AppCompatActivity {
                                         try {
 
                                             Log.v("Hi","여기는 됬다.");
-                                            String str = switchStringminus(tempList.get(i).getLectureStartTime(),-10);//수업시작-10분
-                                            String str2 = switchStringplus(tempList.get(i).getLectureStartTime(),+10);//수업시작+10분
-                                            String str3 = switchStringplus(tempList.get(i).getLectureStartTime(),+30);//수업시작+30분
+                                            String str = switchStringminus(tempList.get(i).getLectureStartTime(),-1);//수업시작-10분
+                                            String str2 = switchStringplus(tempList.get(i).getLectureStartTime(),+1);//수업시작+10분
+                                            String str3 = switchStringplus(tempList.get(i).getLectureStartTime(),+3);//수업시작+30분
 
                                             int startTimeMinus10 = Integer.parseInt(str);
                                             int startTimePlus10 = Integer.parseInt(str2);
@@ -123,31 +150,23 @@ public class BeaconActivity extends AppCompatActivity {
                                             Log.d("This startTimeMinus10", "is  " + startTimeMinus10);
                                             Log.d("This startTimePlus10", "is  " + startTimePlus10);
 
-                                            //현재시간을 구해서 nowIntTime 변수에 담기
-                                            String tempStr[]=switchNowTime().split(" ");
-                                            String nowDate=tempStr[0];
-                                            String nowTime=tempStr[1];
-                                            int nowIntTIme = Integer.parseInt(nowTime);
-
-
-                                            Log.d("This nowIntTime ", "is   " + nowIntTIme);
+                                            Log.d("This nowIntTime ", "is   " + nowIntTime);
                                             Log.d("This nowDate ", "is   " + nowDate);
 
                                             //만약 출결테이블에 본인 학번, 본인 수강과목이 출석||지각 이 아니라면
 
                                             // 수업시작-10분 < 현재시간 < 수업시작+10 인 경우 ==출석
-                                            if (startTimeMinus10 < nowIntTIme && nowIntTIme < startTimePlus10) {
-                                                postAttendance(nowTime,tempList.get(i).getLecture(),"출석",nowDate);
+                                            if (startTimeMinus10 < nowIntTime && nowIntTime < startTimePlus10) {
+                                                postAttendance(nowTime,tempList.get(i).getLecture(),"출석",nowDate,mAudioManager,tempList.get(i).getLectureFinishTime());
                                             }
                                             // 수업시작+10 < 현재시간 < 수업시작 +30 인 경우 ==지각
-                                            else if (startTimeMinus10 < nowIntTIme && nowIntTIme < startTimePlus30) {
-                                                postAttendance(nowTime,tempList.get(i).getLecture(),"지각",nowDate);
+                                            else if (startTimeMinus10 < nowIntTime && nowIntTime < startTimePlus30) {
+                                                postAttendance(nowTime,tempList.get(i).getLecture(),"지각",nowDate,mAudioManager,tempList.get(i).getLectureFinishTime());
                                             }
                                             // 수업시작+30 < 현재시간 < 종료시간 ==결석
-                                            else if (startTimePlus30 < nowIntTIme && nowIntTIme < finishTime) {
-                                                postAttendance(nowTime,tempList.get(i).getLecture(),"결석",nowDate);
+                                            else if (startTimePlus30 < nowIntTime && nowIntTime < finishTime) {
+                                                postAttendance(nowTime,tempList.get(i).getLecture(),"결석",nowDate,mAudioManager,tempList.get(i).getLectureFinishTime());
                                             }
-
 
                                         } catch (ParseException e) {
                                             e.printStackTrace();
@@ -157,25 +176,10 @@ public class BeaconActivity extends AppCompatActivity {
                             }
                         }
 
-
-
-
-
-
-
-
-                        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) //2
-                        {
-                            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                        } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT) //0
-                        {
-                            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                        } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) //1
-                        {
-                            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                        }
-
-                    } else {
+                    }
+                    //비콘구역에 있다가 벗어났을 시
+                    else {
+                        silentFLAG=false;
                         if (soundSet == 0) {
                             mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                         } else if (soundSet == 1) {
@@ -185,7 +189,10 @@ public class BeaconActivity extends AppCompatActivity {
                         }
                     }
 
-                } else {
+                }
+
+                //연결이 없다면.
+                else {
                     tvID.setText("연결이 없습니다");
                     soundSet = mAudioManager.getRingerMode();
                 }
@@ -231,7 +238,7 @@ public class BeaconActivity extends AppCompatActivity {
     }
 
 
-    public void postAttendance(String nowTime, String thisLecture, String state,String todayDate)
+    public void postAttendance(String nowTime, String thisLecture, String state, String todayDate, final AudioManager thisAudioManager, final String str)
     {
         //POST 하는 부분. 서버-DB 쪽이랑 최대한 변수 맞춰서 정리하자.
         String studentNum = BaseActivity.studentList.get(0).getStudentNum();
@@ -254,12 +261,31 @@ public class BeaconActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         FLAG = true;
+                        setSilent(thisAudioManager);
+                        Log.d("지금시간확인",": "+str);
+                        finishThisTime=str;
+                        Log.d("지금시간확인2",": "+finishThisTime);
                     }
 
                     @Override
                     public void onError(ANError anError) {
                     }
                 });
+    }
+
+
+    public void setSilent(AudioManager mAudioManager)
+    {
+        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) //2
+        {
+            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT) //0
+        {
+            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) //1
+        {
+            mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        }
     }
 
 
