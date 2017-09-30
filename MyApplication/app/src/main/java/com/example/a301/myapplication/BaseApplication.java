@@ -43,6 +43,7 @@ public class BaseApplication extends Application {
             }
         });
 
+        //비콘감지
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener(){
 
             Context context = getApplicationContext();

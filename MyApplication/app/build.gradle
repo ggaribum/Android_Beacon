@@ -36,5 +36,7 @@ dependencies {
     compile 'com.amitshekhar.android:android-networking:1.0.0'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.estimote:sdk:0.10.4@aar'
+    compile 'com.amitshekhar.android:android-networking:1.0.0'
+
     testCompile 'junit:junit:4.12'
 }

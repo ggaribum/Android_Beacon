@@ -1,30 +1,20 @@
 package com.example.a301.myapplication;
 
-import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.TextView;
-
-import com.estimote.sdk.Beacon;
-import com.estimote.sdk.BeaconManager;
-import com.estimote.sdk.Region;
-import com.estimote.sdk.SystemRequirementsChecker;
 import com.example.a301.myapplication.Controller.Adapter_Lecture;
 import com.example.a301.myapplication.Controller.Constants;
 import com.example.a301.myapplication.Model.Model_Lecture;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,16 +22,12 @@ public class MainActivity extends AppCompatActivity {
     LinearLayoutManager manager;
     Adapter_Lecture adapter_lecture;
     TextView todayTv;
-    public ArrayList<Model_Lecture> adapterList;
+    public static ArrayList<Model_Lecture> adapterList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        DataManager dataManager = new DataManager();
-        dataManager.loadData();
 
         todayTv=(TextView)findViewById(R.id.toay_TextView);
 
@@ -60,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Calendar cal = Calendar.getInstance();
                 today = Constants.switchDAY(cal.get(Calendar.DAY_OF_WEEK));
-                Log.v("TodayIs", today);
+                //Log.v("TodayIs", today);
                 if (BaseActivity.lectureList.get(i).getLectureDay().contains(today)) {
                     String lecture = BaseActivity.lectureList.get(i).getLecture();
                     String lectureRoom = BaseActivity.lectureList.get(i).getLectureRoom();
