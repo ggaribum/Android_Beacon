@@ -69,17 +69,17 @@ public class BaseApplication extends Application {
                         }
                         else {
                             //앱 실행중 일때
-                            showNotification("M4M", "매너 있게 변경되었습니다");
+                    //        showNotification("M4M", "매너 있게 변경되었습니다");
                         }
                     }
                     else{ //94-110
-                        showNotification("M4M", "매너 공간이 아닙니다");
+                    // showNotification("M4M", "매너 공간이 아닙니다");
                     }
 
                 }
                 else {
                     //list에 없다가 잡혔을 경우에는 ?
-                    showNotification("M4M", "매너 있게 바뀌기 직전 입니다.");
+                  //  showNotification("M4M", "매너 있게 바뀌기 직전 입니다.");
                 }
 
             }
@@ -97,11 +97,11 @@ public class BaseApplication extends Application {
                 {
                     mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                 }
-                showNotification("M4M","매너를 위해 대기 중입니다");
+               // showNotification("M4M","매너를 위해 대기 중입니다");
             }
         });
     }
-    public void showNotification(String title, String message){
+ /*   public void showNotification(String title, String message){
         Intent notifyIntent = new Intent(this, MainActivity.class);
 
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -122,7 +122,7 @@ public class BaseApplication extends Application {
 
         NotificationManager notificationManager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1,notification);
-    }
+    }*/
     private boolean isAlreadyRunActivity()
     {
         ActivityManager activity_manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

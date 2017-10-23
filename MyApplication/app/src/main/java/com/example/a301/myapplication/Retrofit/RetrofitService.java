@@ -14,7 +14,6 @@ import retrofit2.http.GET;
 public interface RetrofitService {
     @GET("/class")
     Call<LectureVO> getLectureData();
-
     @GET("/student")
     Call<StudentVO> getStudentData();
     @GET("/allCheck")

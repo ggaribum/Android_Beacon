@@ -24,12 +24,10 @@ public class BaseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_base);
 
 
-
-
         lectureList = new ArrayList<>();
         studentList= new ArrayList<>();
 
-        //Test_DataManager에 있는 loadData메서드 실행
+        //Test_DataManager에 있는 loadData메서드 실행 -학생정보,강의정보 로드
         DataManager dataManager = new DataManager();
         dataManager.loadData();
 
