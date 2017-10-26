@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1186C0</color>
+    <color name="colorPrimaryDark">#000</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="test">#1a89bc</color>
+
+    <color name="jigak">#e8b12b</color>
+
+    <color name="customActionBar">#1186C0</color>
+
+</resources>
